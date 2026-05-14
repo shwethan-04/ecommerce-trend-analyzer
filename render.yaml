@@ -4,8 +4,8 @@ services:
     runtime: python
     region: oregon
     plan: free
-    buildCommand: chmod +x build.sh && ./build.sh
-    startCommand: gunicorn "dashboard.app:app" --bind "0.0.0.0:$PORT" --workers 2 --timeout 120
+    buildCommand: pip install -r requirements.txt
+    startCommand: chmod +x start.sh && ./start.sh
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.9
@@ -17,7 +17,3 @@ services:
         value: "2"
       - key: DEBUG
         value: "false"
-    disk:
-      name: data
-      mountPath: /opt/render/project/src
-      sizeGB: 1
