@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: ecommerce-trend-analyzer
+    runtime: python
+    region: oregon
+    plan: free
+    buildCommand: chmod +x build.sh && ./build.sh
+    startCommand: gunicorn "dashboard.app:app" --bind "0.0.0.0:$PORT" --workers 2 --timeout 120
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: DATABASE_URL
+        value: sqlite:///./ecommerce_trends.db
+      - key: SCRAPE_DELAY
+        value: "1.0"
+      - key: MAX_RETRIES
+        value: "2"
+      - key: DEBUG
+        value: "false"
+    disk:
+      name: data
+      mountPath: /opt/render/project/src
+      sizeGB: 1

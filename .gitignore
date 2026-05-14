@@ -1,0 +1,86 @@
+# ── Environment & secrets ──────────────────────────────────────────────────────
+.env
+*.env
+
+# ── Python ─────────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+*.pyd
+.Python
+
+# ── Virtual environments ────────────────────────────────────────────────────────
+.venv/
+venv/
+env/
+ENV/
+.virtualenv/
+
+# ── Distribution / packaging ────────────────────────────────────────────────────
+dist/
+build/
+*.egg-info/
+*.egg
+.eggs/
+MANIFEST
+
+# ── Database ────────────────────────────────────────────────────────────────────
+# Don't commit local DB — Render seeds its own on build
+*.db
+*.sqlite
+*.sqlite3
+
+# ── ML models ───────────────────────────────────────────────────────────────────
+# Keep models/ directory but ignore the actual binary (Render trains its own)
+models/
+*.joblib
+*.pkl
+*.pickle
+
+# ── Logs ────────────────────────────────────────────────────────────────────────
+*.log
+logs/
+
+# ── Jupyter Notebooks ───────────────────────────────────────────────────────────
+.ipynb_checkpoints/
+*.ipynb
+
+# ── Testing & coverage ──────────────────────────────────────────────────────────
+.pytest_cache/
+.coverage
+htmlcov/
+coverage.xml
+*.cover
+.tox/
+
+# ── Type checking ───────────────────────────────────────────────────────────────
+.mypy_cache/
+.dmypy.json
+.pytype/
+
+# ── IDEs & editors ──────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# ── Scraped data / exports ──────────────────────────────────────────────────────
+data/
+exports/
+*.csv
+*.json.bak
+
+# ── Selenium / WebDriver ────────────────────────────────────────────────────────
+chromedriver
+geckodriver
+*.webdriver
+
+# ── Matplotlib cache ────────────────────────────────────────────────────────────
+.matplotlib/
+
+# ── pytrends cache ──────────────────────────────────────────────────────────────
+.pytrends/
