@@ -10,6 +10,58 @@ from flask import Flask, jsonify, render_template, request
 logger = logging.getLogger(__name__)
 
 
+def _auto_seed() -> None:
+    """
+    Seed the database with product data on first startup if it is empty.
+    Runs in a background thread so it does not block the server from starting.
+    """
+    import threading
+
+    def _seed():
+        try:
+            from database.db import db_session
+            from database.models import Product
+            from sqlalchemy import func
+
+            with db_session() as db:
+                count = db.query(func.count(Product.id)).scalar() or 0
+
+            if count > 0:
+                logger.info("DB already has %d products — skipping auto-seed.", count)
+                return
+
+            logger.info("DB is empty — running auto-seed pipeline...")
+            import sys, os
+            sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
+
+            # Import pipeline runners
+            from main import run_scrape, run_analysis, run_predictions
+
+            for keyword in ["laptop", "smartphone", "headphones"]:
+                try:
+                    run_scrape(keyword)
+                except Exception as exc:
+                    logger.warning("Seed scrape failed for %r: %s", keyword, exc)
+
+            try:
+                run_analysis()
+            except Exception as exc:
+                logger.warning("Seed analysis failed: %s", exc)
+
+            try:
+                run_predictions()
+            except Exception as exc:
+                logger.warning("Seed predictions failed: %s", exc)
+
+            logger.info("Auto-seed complete.")
+        except Exception as exc:
+            logger.error("Auto-seed error: %s", exc)
+
+    t = threading.Thread(target=_seed, daemon=True)
+    t.start()
+
+
+
 def create_dashboard_app() -> Flask:
     """
     Create and configure the Flask dashboard application.
@@ -22,9 +74,10 @@ def create_dashboard_app() -> Flask:
     template_dir = os.path.join(os.path.dirname(__file__), "templates")
     app = Flask(__name__, template_folder=template_dir)
 
-    # Ensure DB tables exist before any request hits the DB
+    # Ensure DB tables exist and seed data if empty
     from database.db import init_db
     init_db()
+    _auto_seed()
 
     # ------------------------------------------------------------------ #
     # Routes
